@@ -1,0 +1,38 @@
+
+CREATE DATABASE mydatabase;
+
+
+CREATE TABLE product_table (
+marketplace varchar(50),
+customer_id varchar(50),
+product_id varchar(50),
+seller_id varchar(50),
+sell_date varchar(50),
+quantity integer
+)
+
+create table venue(
+	id smallint not null distkey sortkey,
+	name varchar(100),
+	city varchar(30),
+	state char(2),
+	seats integer
+	);
+
+CREATE EXTERNAL  TABLE mydatabase.amazon_table (
+marketplace string,
+customer_id string,
+product_id string,
+product_parent string,
+review_date timestamp
+)
+PARTITIONED BY (year string, month string, day string)
+STORED AS parquet
+LOCATION 's3://myglueproject1/output'
+
+--MSCK REPAIR TABLE scans both a folder and its subfolders to find a matching partition scheme, 
+--be sure to keep data for separate tables in separate folder hierarchies.
+--MSCK REPAIR TABLE command in the Athena query editor to load the partitions
+MSCK REPAIR TABLE mydatabase.amazon_table
+
+select * from mydatabase.amazon_table
